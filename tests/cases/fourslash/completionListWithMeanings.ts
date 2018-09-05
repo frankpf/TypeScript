@@ -24,7 +24,7 @@ const values: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry> = [
     { name: "kk", text: "var kk: m3.point3" },
     { name: "zz", text: "var zz: point" },
     "undefined",
-    ...completion.keywords,
+    ...completion.statementKeywordsWithTypes,
 ];
 
 const types: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry> = [
@@ -36,7 +36,7 @@ const types: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry> = [
 
 verify.completions(
     { marker: "valueExpr", exact: values, isNewIdentifierLocation: true },
-    { marker: "typeExpr", exact:types, },
+    { marker: "typeExpr", exact: types, },
     { marker: "valueExprInObjectLiteral", exact: values },
     { marker: "membertypeExpr", exact: [{ name: "point3", text: "interface m3.point3" }] },
     { marker: "membervalueExpr", exact: [{ name: "zz2", text: "var m3.zz2: number" }] },

@@ -20,7 +20,7 @@
 
 recommended("arg0");
 recommended("arg1", { enumName: "F" });
-recommended("prop");
+recommended("prop", { isNewIdentifierLocation: false });
 recommended("tag");
 recommended("jsx", { isNewIdentifierLocation: false });
 recommended("jsx2", { isNewIdentifierLocation: false, insertText: "{E}" });

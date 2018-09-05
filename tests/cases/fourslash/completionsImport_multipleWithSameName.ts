@@ -24,7 +24,7 @@ verify.completions({
         "undefined",
         { name: "foo", source: "/a", sourceDisplay: "./a", text: "const foo: 0", kind: "const", hasAction: true },
         { name: "foo", source: "/b", sourceDisplay: "./b", text: "const foo: 1", kind: "const", hasAction: true },
-        ...completion.keywords,
+        ...completion.statementKeywordsWithTypes,
     ],
     preferences: { includeCompletionsForModuleExports: true },
 });

@@ -15,8 +15,12 @@
 ////
 ////<div /**/></div>;
 
-goTo.marker();
-verify.completionEntryDetailIs("foo", "(JSX attribute) foo: string", "Doc", "JSX attribute", []);
+const exact: FourSlashInterface.ExpectedCompletionEntry = {
+    name: "foo",
+    text: "(JSX attribute) foo: string",
+    documentation: "Doc",
+    kind: "JSX attribute",
+};
+verify.completions({ marker: "", exact });
 edit.insert("f");
-verify.completionEntryDetailIs("foo", "(JSX attribute) foo: string", "Doc", "JSX attribute", []);
-
+verify.completions({ exact });

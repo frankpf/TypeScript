@@ -147,21 +147,6 @@ declare namespace FourSlashInterface {
         allowedConstructorParameterKeywords: string[];
         constructor(negative?: boolean);
         completionListCount(expectedCount: number): void;
-        completionListContains(
-            entryId: string | { name: string, source?: string },
-            text?: string,
-            documentation?: string,
-            kind?: string | { kind?: string, kindModifiers?: string },
-            spanIndex?: number,
-            hasAction?: boolean,
-            options?: UserPreferences & {
-                triggerCharacter?: string,
-                sourceDisplay?: string,
-                isRecommended?: true,
-                insertText?: string,
-                replacementSpan?: Range,
-            },
-        ): void;
         completionListItemsCountIsGreaterThan(count: number): void;
         completionListIsEmpty(): void;
         completionListAllowsNewIdentifier(): void;
@@ -289,7 +274,6 @@ declare namespace FourSlashInterface {
         rangesAreDocumentHighlights(ranges?: Range[], options?: VerifyDocumentHighlightsOptions): void;
         rangesWithSameTextAreDocumentHighlights(): void;
         documentHighlightsOf(startRange: Range, ranges: Range[], options?: VerifyDocumentHighlightsOptions): void;
-        completionEntryDetailIs(entryName: string, text: string, documentation?: string, kind?: string, tags?: ts.JSDocTagInfo[]): void;
         /**
          * This method *requires* a contiguous, complete, and ordered stream of classifications for a file.
          */
@@ -551,6 +535,7 @@ declare namespace FourSlashInterface {
         // details
         readonly text?: string;
         readonly documentation?: string;
+        readonly tags?: ReadonlyArray<JSDocTagInfo>;
         readonly sourceDisplay?: string;
     }
 
@@ -657,4 +642,6 @@ declare namespace completion {
     export const constructorParameterKeywords: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry>;
     export const functionMembers: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry>;
     export const functionMembersWithPrototype: ReadonlyArray<FourSlashInterface.ExpectedCompletionEntry>;
+    export const statementKeywordsWithTypes: ReadonlyArray<string>;
+    export const statementKeywords: ReadonlyArray<string>;
 }
