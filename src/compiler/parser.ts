@@ -1481,6 +1481,8 @@ namespace ts {
                     // Include open bracket computed properties. This technically also lets in indexers,
                     // which would be a candidate for improved error reporting.
                     return token() === SyntaxKind.OpenBracketToken || isLiteralPropertyName();
+                case ParsingContext.UnionMembers:
+                    return isIdentifier();
                 case ParsingContext.ObjectLiteralMembers:
                     return token() === SyntaxKind.OpenBracketToken || token() === SyntaxKind.AsteriskToken || token() === SyntaxKind.DotDotDotToken || isLiteralPropertyName();
                 case ParsingContext.RestProperties:
@@ -1602,6 +1604,7 @@ namespace ts {
                 case ParsingContext.TypeMembers:
                 case ParsingContext.ClassMembers:
                 case ParsingContext.EnumMembers:
+                case ParsingContext.UnionMembers:
                 case ParsingContext.ObjectLiteralMembers:
                 case ParsingContext.ObjectBindingElements:
                 case ParsingContext.ImportOrExportSpecifiers:
@@ -5144,7 +5147,7 @@ namespace ts {
                     case SyntaxKind.EnumKeyword:
                         return true;
 
-                    // 'declare', 'module', 'namespace', 'interface'* and 'type' are all legal JavaScript identifiers;
+                    // 'union', 'declare', 'module', 'namespace', 'interface'* and 'type' are all legal JavaScript identifiers;
                     // however, an identifier cannot be followed by another identifier on the same line. This is what we
                     // count on to parse out the respective declarations. For instance, we exploit this to say that
                     //
@@ -5165,6 +5168,7 @@ namespace ts {
                     //   I {}
                     //
                     // could be legal, it would add complexity for very little gain.
+                    case SyntaxKind.UnionKeyword:
                     case SyntaxKind.InterfaceKeyword:
                     case SyntaxKind.TypeKeyword:
                         return nextTokenIsIdentifierOnSameLine();
@@ -5339,6 +5343,7 @@ namespace ts {
                 case SyntaxKind.DeclareKeyword:
                 case SyntaxKind.ConstKeyword:
                 case SyntaxKind.EnumKeyword:
+                case SyntaxKind.UnionKeyword:
                 case SyntaxKind.ExportKeyword:
                 case SyntaxKind.ImportKeyword:
                 case SyntaxKind.PrivateKeyword:
@@ -5391,6 +5396,8 @@ namespace ts {
                     return parseTypeAliasDeclaration(<TypeAliasDeclaration>node);
                 case SyntaxKind.EnumKeyword:
                     return parseEnumDeclaration(<EnumDeclaration>node);
+                case SyntaxKind.UnionKeyword:
+                    return parseUnionDeclaration(<UnionDeclaration>node);
                 case SyntaxKind.GlobalKeyword:
                 case SyntaxKind.ModuleKeyword:
                 case SyntaxKind.NamespaceKeyword:
@@ -5905,6 +5912,27 @@ namespace ts {
             return parseList(ParsingContext.ClassMembers, parseClassElement);
         }
 
+        function parseUnionMember(): UnionMember {
+            const node = <UnionMember>createNodeWithJSDoc(SyntaxKind.UnionMember);
+            node.name = parseIdentifier();
+            return finishNode(node);
+        }
+
+        function parseUnionDeclaration(node: UnionDeclaration): UnionDeclaration {
+            node.kind = SyntaxKind.UnionDeclaration;
+            parseExpected(SyntaxKind.UnionKeyword);
+            node.name = parseIdentifier();
+            //node.typeParameters = parseTypeParameters();
+            if (parseExpected(SyntaxKind.OpenBraceToken)) {
+                node.members = parseDelimitedList(ParsingContext.UnionMembers, parseUnionMember);
+                parseExpected(SyntaxKind.CloseBraceToken);
+            }
+            else {
+                node.members = createMissingList<UnionMember>();
+            }
+            return finishNode(node);
+        }
+
         function parseInterfaceDeclaration(node: InterfaceDeclaration): InterfaceDeclaration {
             node.kind = SyntaxKind.InterfaceDeclaration;
             parseExpected(SyntaxKind.InterfaceKeyword);
@@ -6267,6 +6295,7 @@ namespace ts {
             TypeMembers,               // Members in interface or type literal
             ClassMembers,              // Members in class declaration
             EnumMembers,               // Members in enum declaration
+            UnionMembers,             // Members in union declaration
             HeritageClauseElement,     // Elements in a heritage clause
             VariableDeclarations,      // Variable declarations in variable statement
             ObjectBindingElements,     // Binding elements in object binding list
