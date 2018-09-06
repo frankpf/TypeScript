@@ -73,6 +73,7 @@ namespace ts.JsDoc {
         "tutorial",
         "type",
         "typedef",
+        "union",
         "var",
         "variation",
         "version",
