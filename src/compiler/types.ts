@@ -190,6 +190,7 @@ namespace ts {
         SymbolKeyword,
         TypeKeyword,
         UndefinedKeyword,
+        UnionKeyword,
         UniqueKeyword,
         UnknownKeyword,
         FromKeyword,
@@ -303,6 +304,7 @@ namespace ts {
         InterfaceDeclaration,
         TypeAliasDeclaration,
         EnumDeclaration,
+        UnionDeclaration,
         ModuleDeclaration,
         ModuleBlock,
         CaseBlock,
@@ -348,6 +350,10 @@ namespace ts {
 
         // Enum
         EnumMember,
+
+        // Union
+        UnionMember,
+
         // Top-level nodes
         SourceFile,
         Bundle,
@@ -576,6 +582,7 @@ namespace ts {
         | TypeAliasDeclaration
         | EnumMember
         | EnumDeclaration
+        | UnionDeclaration
         | ModuleDeclaration
         | ImportEqualsDeclaration
         | IndexSignatureDeclaration
@@ -2075,6 +2082,19 @@ namespace ts {
         _typeElementBrand: any;
         name?: PropertyName;
         questionToken?: QuestionToken;
+    }
+
+    export interface UnionMember extends NamedDeclaration, JSDocContainer {
+        kind: SyntaxKind.UnionMember;
+        parent: UnionDeclaration;
+        name: Identifier;
+    }
+
+    export interface UnionDeclaration extends DeclarationStatement, JSDocContainer {
+        kind: SyntaxKind.UnionDeclaration;
+        name: Identifier;
+        // typeParameters?: NodeArray<TypeParameterDeclaration>
+        members: NodeArray<UnionMember>;
     }
 
     export interface InterfaceDeclaration extends DeclarationStatement, JSDocContainer {
