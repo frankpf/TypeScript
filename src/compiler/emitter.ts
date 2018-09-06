@@ -776,6 +776,8 @@ namespace ts {
                         return emitTypeAliasDeclaration(<TypeAliasDeclaration>node);
                     case SyntaxKind.EnumDeclaration:
                         return emitEnumDeclaration(<EnumDeclaration>node);
+                    case SyntaxKind.UnionDeclaration:
+                        return emitUnionDeclaration(<UnionDeclaration>node);
                     case SyntaxKind.ModuleDeclaration:
                         return emitModuleDeclaration(<ModuleDeclaration>node);
                     case SyntaxKind.ModuleBlock:
@@ -2207,6 +2209,10 @@ namespace ts {
             writePunctuation("{");
             emitList(node, node.members, ListFormat.EnumMembers);
             writePunctuation("}");
+        }
+
+        function emitUnionDeclaration(node: UnionDeclaration) {
+            writeStringLiteral(`EMITTED UNION ${node.name}!`);
         }
 
         function emitModuleDeclaration(node: ModuleDeclaration) {
